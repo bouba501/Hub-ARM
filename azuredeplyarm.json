@@ -1,0 +1,176 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {},
+    "functions": [],
+    "variables": {},
+    "resources": [
+
+
+/////////////
+////VNET/////
+/////////////
+
+        {
+            "name": "Hub-Vnet",
+            "type": "Microsoft.Network/virtualNetworks",
+            "apiVersion": "2020-11-01",
+            "location": "[resourceGroup().location]",
+            "tags": {
+                "displayName": "Hub-Vnet"
+            },
+            "properties": {
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "10.16.0.0/16"
+                    ]
+                },
+                "subnets": [
+                    {
+                        "name": "GatewaySubnet",
+                        "properties": {
+                            "addressPrefix": "10.16.0.0/26"
+                        }
+                    },
+                    {
+                        "name": "AzureFirewallSubnet",
+                        "properties": {
+                            "addressPrefix": "10.16.0.64/26"
+                        }
+                    },
+                     {
+                        "name": "AzureBastionSubnet",
+                        "properties": {
+                            "addressPrefix": "10.16.0.128/26"
+                        }
+                    }
+                ]
+            }
+        },
+/////////////////////////////////
+/// Gateway
+/////////////////////////////////
+
+
+        {
+            "name": "virtualNetworkGateway1",
+            "type": "Microsoft.Network/virtualNetworkGateways",
+            "apiVersion": "2020-11-01",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/publicIPAddresses', 'publicIPAddress1')]",
+                "[resourceId('Microsoft.Network/virtualNetworks', 'virtualNetwork1')]"
+            ],
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "vnetGatewayConfig",
+                        "properties": {
+                            "privateIPAllocationMethod": "Dynamic",
+                            "subnet": {
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'Hub-Vnet', 'GatewaySubnet')]"
+                            },
+                            "publicIPAddress": {
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', 'publicIPAddress1')]"
+                            }
+                        }
+                    }
+                ],
+                "sku": {
+                    "name": "Basic",
+                    "tier": "Basic"
+                },
+                "gatewayType": "Vpn",
+                "vpnType": "PolicyBased",
+                "enableBgp": false
+            }
+        },
+
+///////////////////////////////
+////     FIREWALL
+///////////////////////////////
+
+
+        {
+            "name": "AzureFirewall",
+            "type": "Microsoft.Network/azureFirewalls",
+            "apiVersion": "2020-11-01",
+            "location": "[resourceGroup().location]",
+            "tags": {},
+            "properties": {
+                
+                "ipConfigurations": [
+                    {
+                        "name": "ipFire-test",
+                        "properties": {
+                            "subnet": {
+                                "id": "[resourceId('virtualNetworkResourceGroup', 'Microsoft.Network/virtualNetworks/subnets', 'Hub-Vnet', 'AzureFirewallSubnet')]"
+                            },
+                            "publicIPAddress": {
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', 'publicIPAddress1')]"
+                            }
+                        }
+                    }
+                ]
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/publicIPAddresses', 'publicIPAddress1')]"
+            ]
+        },
+        {
+            "name": "publicIPAddress1",
+            "type": "Microsoft.Network/publicIPAddresses",
+            "apiVersion": "2020-11-01",
+            "location": "[resourceGroup().location]",
+            "sku": {
+                "name": "Basic"
+            },
+            "tags": {
+                "createdFor": "AzureFirewall"
+            },
+            "properties": {
+                "publicIPAllocationMethod": "Dynamic",
+                "dnsSettings": {
+                    "domainNameLabel": "[concat('firewall1', uniqueString(resourceGroup().id))]"
+                }
+            }
+        },
+
+///////////////////////////
+//    BASTION            //
+//////////////////////////
+
+        {
+  "type": "Microsoft.Network/bastionHosts",
+  "apiVersion": "2020-11-01",
+  "name": "string",
+  "location": "string",
+  "tags": {
+    "tagName1": "tagValue1",
+    "tagName2": "tagValue2"
+  },
+  "sku": {
+    "name": "string"
+  },
+  "properties": {
+    "ipConfigurations": [
+      {
+        "id": "string",
+        "name": "string",
+        "properties": {
+          "privateIPAllocationMethod": "Dynamic",
+          "publicIPAddress": {
+            "id": "string"
+          },
+          "subnet": {
+            "id": "string"
+          }
+        }
+      }
+    ],
+    "scaleUnits": "int"
+  }
+}
+    ],
+    "outputs": {}
+}
