@@ -7,9 +7,9 @@
     "resources": [
 
 
-/////////////
-////VNET/////
-/////////////
+        /////////////
+        ////VNET/////
+        /////////////
 
         {
             "name": "Hub-Vnet",
@@ -38,7 +38,7 @@
                             "addressPrefix": "10.16.0.64/26"
                         }
                     },
-                     {
+                    {
                         "name": "AzureBastionSubnet",
                         "properties": {
                             "addressPrefix": "10.16.0.128/26"
@@ -47,9 +47,9 @@
                 ]
             }
         },
-/////////////////////////////////
-/// Gateway
-/////////////////////////////////
+        /////////////////////////////////
+        /// Gateway
+        /////////////////////////////////
 
 
         {
@@ -86,9 +86,9 @@
             }
         },
 
-///////////////////////////////
-////     FIREWALL
-///////////////////////////////
+        ///////////////////////////////
+        ////     FIREWALL
+        ///////////////////////////////
 
 
         {
@@ -98,7 +98,7 @@
             "location": "[resourceGroup().location]",
             "tags": {},
             "properties": {
-                
+
                 "ipConfigurations": [
                     {
                         "name": "ipFire-test",
@@ -136,41 +136,41 @@
             }
         },
 
-///////////////////////////
-//    BASTION            //
-///////////////////////////
+        ///////////////////////////
+        //    BASTION            //
+        ///////////////////////////
 
         {
-  "type": "Microsoft.Network/bastionHosts",
-  "apiVersion": "2020-11-01",
-  "name": "string",
-  "location": "string",
-  "tags": {
-    "tagName1": "tagValue1",
-    "tagName2": "tagValue2"
-  },
-  "sku": {
-    "name": "string"
-  },
-  "properties": {
-    "ipConfigurations": [
-      {
-        "id": "string",
-        "name": "string",
-        "properties": {
-          "privateIPAllocationMethod": "Dynamic",
-          "publicIPAddress": {
-            "id": "string"
-          },
-          "subnet": {
-            "id": "string"
-          }
+            "type": "Microsoft.Network/bastionHosts",
+            "apiVersion": "2020-11-01",
+            "name": "string",
+            "location": "string",
+            "tags": {
+                "tagName1": "tagValue1",
+                "tagName2": "tagValue2"
+            },
+            "sku": {
+                "name": "string"
+            },
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "id": "string",
+                        "name": "string",
+                        "properties": {
+                            "privateIPAllocationMethod": "Dynamic",
+                            "publicIPAddress": {
+                                "id": "string"
+                            },
+                            "subnet": {
+                                "id": "string"
+                            }
+                        }
+                    }
+                ],
+                "scaleUnits": "int"
+            }
         }
-      }
-    ],
-    "scaleUnits": "int"
-  }
-}
     ],
     "outputs": {}
 }
